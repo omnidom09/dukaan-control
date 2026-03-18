@@ -589,7 +589,7 @@ function AddEntryModal({type,onSave,onClose,customerName,balance}){
           <input type="number" value={amt} onChange={e=>setAmt(e.target.value)} placeholder="Enter ₹ amount..." className="inp" style={{fontSize:20,fontWeight:700}}/>
           <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
             {quickAmounts.map(a=>(
-              <button key={a} onClick={()=>setAmt(String(a))} className="pill" style={{background:amt==String(a)?(isCredit?"#DC2626":"#16A34A"):"#F5F5F4",color:amt==String(a)?"#fff":"#64748B",fontSize:13}}>₹{a}</button>
+              <button key={a} onClick={()=>setAmt(String(a))} className="pill" style={{background:String(amt)===String(a)?(isCredit?"#DC2626":"#16A34A"):"#F5F5F4",color:String(amt)===String(a)?"#fff":"#64748B",fontSize:13}}>₹{a}</button>
             ))}
           </div>
         </div>
@@ -750,7 +750,6 @@ function ReportsView({transactions,customers,khata}){
   const today=todayStr();
   const todayTxns=useMemo(()=>transactions.filter(t=>t.date.startsWith(today)),[transactions,today]);
   const totalSales=useMemo(()=>todayTxns.reduce((s,t)=>s+t.total,0),[todayTxns]);
-  const totalGST  =useMemo(()=>todayTxns.reduce((s,t)=>s+t.gst,0),[todayTxns]);
   const payBreak  =useMemo(()=>{ const m={Cash:0,UPI:0,Card:0,Udhar:0}; todayTxns.forEach(t=>m[t.paymentMode]=(m[t.paymentMode]||0)+t.total); return m; },[todayTxns]);
   const totalUdhar=useMemo(()=>customers.reduce((s,c)=>s+(c.balance<0?Math.abs(c.balance):0),0),[customers]);
   const week=useMemo(()=>{ const a=[]; for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split("T")[0];const tx=transactions.filter(t=>t.date.startsWith(ds));a.push({ds,total:tx.reduce((s,t)=>s+t.total,0),count:tx.length,label:d.toLocaleDateString("en-IN",{weekday:"short",day:"numeric"})});} return a; },[transactions]);
